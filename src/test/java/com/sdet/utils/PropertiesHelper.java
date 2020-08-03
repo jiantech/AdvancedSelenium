@@ -13,6 +13,7 @@ public class PropertiesHelper {
 
     static {
         try {
+            properties = new Properties();
             properties.load(new FileInputStream(new File(CONFIGFILE)));
         } catch (IOException e) {
             e.printStackTrace();
@@ -21,6 +22,7 @@ public class PropertiesHelper {
 
     public static String getString(String key)
     {
+        System.out.println(properties.get(key).toString());
         return properties.get(key).toString();
     }
 
@@ -31,6 +33,7 @@ public class PropertiesHelper {
 
     public static String getDecodedString(String key)
     {
-        return String.valueOf(Base64.decodeBase64(getString(key).getBytes()));
+        Base64 base64 = new Base64();
+        return new String(base64.decode(getString(key).getBytes()));
     }
 }
