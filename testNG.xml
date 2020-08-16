@@ -3,7 +3,7 @@
 <suite name="SDET Class" verbose="1" parallel="methods" thread-count="2">
     <test name="Google Test">
         <classes>
-            <class name="com.sdet.tests.MyFirstTest"></class>
+            <class name="com.sdet.tests.WebTableTest"></class>
         </classes>
     </test>
     <listeners>
