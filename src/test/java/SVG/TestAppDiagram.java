@@ -1,12 +1,17 @@
 package SVG;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 
 public class TestAppDiagram {
 
@@ -29,16 +34,36 @@ public class TestAppDiagram {
 
         act= new Actions(driver);
         act.dragAndDropBy(element2, 450, 175).build().perform();
-        WebElement ele = driver.findElement(By.xpath("//body[1]/div[8]/*[local-name()='svg'][1]/*[name()='g'][1]/*[name()='g'][2]/*[name()='g'][1]/*[name()='rect'][1]"));
-        System.out.println(ele.getLocation());
 
-        act.moveToElement(ele).perform();
+        driver.findElement(By.xpath("//div[@class='geDiagramContainer geDiagramBackdrop']//*[local-name()='svg']")).click();
+        WebElement rectangle = driver.findElement(By.xpath("//body[1]/div[8]/*[local-name()='svg'][1]/*[name()='g'][1]/*[name()='g'][2]/*[name()='g'][1]/*[name()='rect'][1]"));
+        //act.moveToElement(rectangle).perform();
 
+        driver.findElement(By.xpath("//div[@class='geDiagramContainer geDiagramBackdrop']//*[local-name()='svg']")).click();
         WebElement roundedRect = driver.findElement(By.xpath("//body[1]/div[8]/*[local-name()='svg'][1]/*[name()='g'][1]/*[name()='g'][2]/*[name()='g'][2]/*[name()='rect'][1]"));
-        ArrowFinder arrowFinder = new ArrowFinder(driver, ele);
+        act.moveToElement(roundedRect).perform();
+        XFinder xFinderRR = new XFinder(driver, roundedRect);
+
+        act.moveToElement(rectangle).perform();
+        XFinder xFinderRectangle = new XFinder(driver, rectangle);
+        Wait wait = new FluentWait(driver).ignoring(StaleElementReferenceException.class).pollingEvery(Duration.ofMillis(500)).withTimeout(Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.elementToBeClickable(xFinderRectangle.getX(1)));
+        int x = xFinderRR.getRect(7).getX() - xFinderRectangle.getRect(15).getX();
+        act.dragAndDropBy(xFinderRectangle.getX(15), x, 0).perform();
+        driver.findElement(By.xpath("//div[@class='geDiagramContainer geDiagramBackdrop']//*[local-name()='svg']")).click();
+
+
+
+
+
+
+
+
+
+        //ArrowFinder arrowFinder = new ArrowFinder(driver, ele);
 
         //DotFinder dotFinder = new DotFinder(driver, roundedRect);
-        arrowFinder.dragArrow(ArrowFinder.ARROWTYPE.RIGHT, ele, roundedRect);
+        //arrowFinder.dragArrow(ArrowFinder.ARROWTYPE.RIGHT, ele, roundedRect);
 
         /*ele.click();
         WebElement arrow = driver.findElement(By.xpath("//body[1]/div[8]/*[local-name()='svg'][1]/*[name()='g'][1]/*[name()='g'][3]/*[name()='g'][6]/*[name()='image']"));
